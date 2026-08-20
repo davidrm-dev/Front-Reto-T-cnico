@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useLingui } from "@lingui/react";
 import Button from "../../../components/common/Button";
@@ -19,6 +19,14 @@ function LoginPage() {
   const { setUser } = useAuth();
   const { i18n } = useLingui();
   const t = (id, message) => i18n._({ id, message });
+
+  useEffect(() => {
+    if (location.state?.oauthError) {
+      setServerError(t("login.oauthError", "No se pudo iniciar sesión con Google/Meta. Intentá de nuevo."));
+      navigate(location.pathname, { replace: true, state: null });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
